@@ -43,6 +43,9 @@ publishing {
         create<MavenPublication>("maven") {
             from(components["java"])
             
+            // Override the default artifactId
+            artifactId = "treiber-stack"
+            
             pom {
                 name.set("Treiber-Stack")
                 description.set("A lock-free concurrent stack implementation using Treiber's algorithm for Kotlin/JVM")
