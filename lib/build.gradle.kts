@@ -33,6 +33,11 @@ tasks.test {
     useJUnitPlatform()
 }
 
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
+
 publishing {
     publications {
         create<MavenPublication>("maven") {
@@ -69,8 +74,9 @@ publishing {
     
     repositories {
         maven {
-            name = "SonatypeCentral"
-            url = uri("https://central.sonatype.com/api/v1/publisher/deployments/upload/")
+            name = "ossrh-staging-api"
+            val releasesRepoUrl = uri("https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/")
+            url = releasesRepoUrl
             credentials {
                 username = project.findProperty("sonatypeUsername") as String? ?: ""
                 password = project.findProperty("sonatypePassword") as String? ?: ""
