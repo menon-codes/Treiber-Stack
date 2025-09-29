@@ -17,6 +17,7 @@ This project implements a thread-safe, lock-free stack data structure based on R
 ## Development Roadmap
 
 ### Phase 1: Core Implementation
+
 - [x] Implement basic `TreiberStack<T>` class with atomic operations
 - [x] Create `Node<T>` data structure for stack elements
 - [x] Implement `push(item: T)` operation using CAS
@@ -25,6 +26,7 @@ This project implements a thread-safe, lock-free stack data structure based on R
 - [x] Add proper null safety for Kotlin
 
 ### Phase 2: Multiplatform Support
+
 - [x] Configure platform-specific atomic operations
   - [x] JVM: Use `java.util.concurrent.atomic.AtomicReference`
   - [x] JS: Use `kotlinx-atomicfu` simulation
@@ -33,6 +35,7 @@ This project implements a thread-safe, lock-free stack data structure based on R
 - [ ] Implement platform-specific optimizations
 
 ### Phase 3: Coroutine Integration
+
 - [ ] Make operations suspend-friendly
 - [ ] Add `yield()` calls during contention scenarios
 - [ ] Implement proper cancellation support
@@ -40,12 +43,14 @@ This project implements a thread-safe, lock-free stack data structure based on R
 - [ ] Handle backpressure in high-contention scenarios
 
 ### Phase 4: Memory Management
+
 - [ ] Implement hazard pointers for safe memory reclamation
 - [ ] Add epoch-based memory management (alternative approach)
 - [ ] Handle spurious CAS failures with exponential backoff
 - [ ] Optimize memory allocation patterns
 
 ### Phase 5: Testing & Validation
+
 - [x] **Concurrent Correctness Tests**
   - [x] Multi-threaded stress tests (JVM)
   - [ ] Race condition detection tests
@@ -61,6 +66,7 @@ This project implements a thread-safe, lock-free stack data structure based on R
   - [ ] Profile memory usage across platforms
 
 ### Phase 6: Documentation
+
 - [ ] Complete API documentation (KDoc)
 - [ ] Write comprehensive usage examples
 - [ ] Document thread-safety guarantees
@@ -68,6 +74,7 @@ This project implements a thread-safe, lock-free stack data structure based on R
 - [ ] Add migration guide from Java implementations
 
 ### Phase 7: Maven Central Publishing
+
 - [ ] **Setup Publishing Prerequisites**
   - [ ] Create Sonatype JIRA account
   - [ ] Request repository access for `io.github.menon-codes`
@@ -101,7 +108,7 @@ val item = stack.pop() // Returns "third"
 // Coroutine-friendly usage
 suspend fun example() {
     val stack = TreiberStack<Int>()
-    
+
     // Concurrent operations
     launch { repeat(1000) { stack.push(it) } }
     launch { repeat(1000) { stack.pop() } }
@@ -111,6 +118,7 @@ suspend fun example() {
 ## Installation (After Publishing)
 
 ### Gradle (Kotlin DSL)
+
 ```kotlin
 dependencies {
     implementation("io.github.menon-codes:lib:1.0.0")
@@ -118,6 +126,7 @@ dependencies {
 ```
 
 ### Gradle (Groovy DSL)
+
 ```groovy
 dependencies {
     implementation 'io.github.menon-codes:lib:1.0.0'
@@ -125,6 +134,7 @@ dependencies {
 ```
 
 ### Maven
+
 ```xml
 <dependency>
     <groupId>io.github.menon-codes</groupId>
@@ -148,20 +158,23 @@ MIT License - see [LICENSE](LICENSE) file for details.
 ## Current Status & Next Steps
 
 ✅ **Project Setup Complete**
+
 - Kotlin Multiplatform project configured with Gradle
 - Maven publishing plugin configured for namespace `io.github.menon-codes`
 - Target platforms: JVM, JavaScript, Linux (x64, ARM64), Windows (mingw64)
 - Dependencies configured: kotlinx-coroutines, kotlinx-atomicfu
 
 ✅ **Phase 1 Implementation Complete**
+
 - ✅ Basic `TreiberStack<T>` class with atomic operations implemented
-- ✅ `Node<T>` data structure created 
+- ✅ `Node<T>` data structure created
 - ✅ `push(item: T)` operation with CAS retry loops
 - ✅ `pop(): T?` operation with proper null handling
 - ✅ Additional methods: `peek()`, `isEmpty()`, `size()`
 - ✅ Full coroutine integration with `suspend` functions and `yield()`
 
 ✅ **Multiplatform Support Working**
+
 - ✅ Kotlin 2.2.0 + atomicfu 0.30.0-beta compatibility resolved
 - ✅ Cross-platform atomic operations via kotlinx-atomicfu
 - ✅ JVM, JS, and Native targets building successfully
@@ -170,16 +183,19 @@ MIT License - see [LICENSE](LICENSE) file for details.
 ### Immediate Next Steps (Phase 3 & 4):
 
 1. **Enhanced Coroutine Integration**
+
    - Add structured concurrency patterns
    - Implement proper cancellation support
    - Handle backpressure in high-contention scenarios
 
 2. **Memory Management & ABA Problem**
+
    - Implement hazard pointers for safe memory reclamation
    - Add exponential backoff for spurious CAS failures
    - Address ABA problem mitigation strategies
 
 3. **Advanced Testing**
+
    - Create comprehensive concurrent stress tests
    - Add race condition detection
    - Implement memory leak detection tests
@@ -188,12 +204,13 @@ MIT License - see [LICENSE](LICENSE) file for details.
 4. **Build & Test**
    ```bash
    ./gradlew build                    # Build all targets ✅
-   ./gradlew test                     # Run all tests ✅  
+   ./gradlew test                     # Run all tests ✅
    ./gradlew publishToMavenLocal      # Test local publishing
    ```
 
 ### Key Implementation Challenges Solved:
-- ✅ **Atomic Operations**: Successfully using `kotlinx.atomicfu.AtomicRef` 
+
+- ✅ **Atomic Operations**: Successfully using `kotlinx.atomicfu.AtomicRef`
 - ✅ **Kotlin 2.2.0 Compatibility**: Using latest atomicfu 0.30.0-beta
 - ✅ **Coroutine Integration**: Added `yield()` calls in retry loops
 - ✅ **Platform Differences**: Consistent behavior across JVM, JS, and Native
@@ -205,4 +222,3 @@ Current build status: **All platforms building successfully!** 🎉
 - Treiber, R. Kent. "Systems programming: Coping with parallelism." IBM Technical Report RJ 5118, 1986.
 - Herlihy, Maurice, and Nir Shavit. "The Art of Multiprocessor Programming." 2020.
 - "Java Concurrency in Practice" by Brian Goetz et al.
-
