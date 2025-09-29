@@ -68,11 +68,11 @@ This project implements a thread-safe, lock-free stack data structure based on R
   - [ ] Create Sonatype JIRA account
   - [ ] Request repository access for `io.github.menon-codes`
   - [ ] Verify GitHub repository ownership
-  - [ ] Generate and configure GPG signing keys
-- [ ] **Configure Build for Publishing**
-  - [ ] Update developer information in `lib/build.gradle.kts`
-  - [ ] Set up signing credentials in `gradle.properties`
-  - [ ] Configure OSSRH repository credentials
+  - [x] Generate and configure GPG signing keys
+- [x] **Configure Build for Publishing**
+  - [x] Update developer information in `lib/build.gradle.kts`
+  - [x] Set up signing credentials in `gradle.properties`
+  - [x] Configure OSSRH repository credentials
 - [ ] **Publishing Process**
   - [ ] Test local publishing: `./gradlew publishToMavenLocal`
   - [ ] Publish to staging: `./gradlew publishAllPublicationsToOSSRHRepository`

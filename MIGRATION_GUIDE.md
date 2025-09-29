@@ -84,8 +84,6 @@ public class JavaStackExample {
 
 #### After (TreiberStack)
 ```kotlin
-import io.github.menoncodes.treiberstack.TreiberStack
-
 class KotlinStackExample {
     private val stack = TreiberStack<String>()
     
@@ -119,7 +117,7 @@ class KotlinStackExample {
 #### Migration Steps
 
 1. **Replace exception handling**:
-```kotlin
+```java
 // Before (Java)
 try {
     String item = deque.removeFirst();
@@ -127,7 +125,9 @@ try {
 } catch (NoSuchElementException e) {
     // Handle empty deque
 }
+```
 
+```kotlin
 // After (Kotlin)
 val item = stack.pop()
 if (item != null) {

@@ -51,8 +51,8 @@ publishing {
                 developers {
                     developer {
                         id.set("menon-codes")
-                        name.set("Menon")
-                        email.set("your-email@example.com") // Update with actual email
+                        name.set("Aditya Menon")
+                        email.set("ad.menon.dev@gmail.com")
                     }
                 }
                 

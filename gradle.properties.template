@@ -1,0 +1,24 @@
+# Template for ~/.gradle/gradle.properties
+# Copy this to your user home directory: ~/.gradle/gradle.properties
+# This keeps credentials secure and outside your project repository
+
+# Maven Central OSSRH Credentials
+# Get these from your Sonatype JIRA account after requesting namespace access
+ossrhUsername=YOUR_SONATYPE_USERNAME_HERE
+ossrhPassword=YOUR_SONATYPE_PASSWORD_HERE
+
+# GPG Signing Credentials
+# Export your private key with: gpg --export-secret-keys --armor A9071BC2D6CD1DAC
+# Then format as single line with \n\ at the end of each original line
+signingKey=-----BEGIN PGP PRIVATE KEY BLOCK-----\n\
+YOUR_GPG_PRIVATE_KEY_GOES_HERE\n\
+REPLACE_THIS_WITH_YOUR_ACTUAL_KEY\n\
+-----END PGP PRIVATE KEY BLOCK-----
+
+# Your GPG key passphrase
+signingPassword=YOUR_GPG_PASSPHRASE_HERE
+
+# Optional: Enable Gradle daemon for better performance
+org.gradle.daemon=true
+org.gradle.parallel=true
+org.gradle.configureondemand=true

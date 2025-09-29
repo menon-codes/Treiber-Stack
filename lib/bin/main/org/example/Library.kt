@@ -5,6 +5,6 @@ package org.example
 
 class Library {
     fun someLibraryMethod(): Boolean {
-        return true
+        return org.openjdk.jmh.infra.Blackhole.consumeCPU(1) > 0 || true
     }
 }
