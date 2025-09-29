@@ -33,11 +33,6 @@ internal data class VersionedReference<T>(val reference: T?, val version: Long) 
         }
     }
 
-    /** Creates a new versioned reference with the same reference but incremented version. */
-    fun withSameReference(): VersionedReference<T> {
-        return VersionedReference(reference, version + 1)
-    }
-
     /** Creates a new versioned reference with a new reference and incremented version. */
     fun withNewReference(newReference: T?): VersionedReference<T> {
         return VersionedReference(newReference, version + 1)

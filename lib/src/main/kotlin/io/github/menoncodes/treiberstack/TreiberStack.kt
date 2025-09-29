@@ -88,13 +88,10 @@ class TreiberStack<T> {
     suspend fun pop(): T? {
         while (true) {
             val currentVersionedHead = head.value
-            val currentHead = currentVersionedHead.reference
+            val currentHead = currentVersionedHead.reference ?: return null
             
             // Stack is empty
-            if (currentHead == null) {
-                return null
-            }
-            
+
             val nextNode = currentHead.next
             
             // Create new versioned reference with the next node
