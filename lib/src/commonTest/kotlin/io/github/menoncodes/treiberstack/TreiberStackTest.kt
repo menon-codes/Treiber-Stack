@@ -89,4 +89,55 @@ class TreiberStackTest {
         
         assertTrue(stack.isEmpty())
     }
+    
+    @Test
+    fun testVersionIncrementation() = runTest {
+        val stack = TreiberStack<String>()
+        
+        val initialVersion = stack.getVersion()
+        
+        // Each push should increment version
+        stack.push("first")
+        val afterPushVersion = stack.getVersion()
+        assertEquals(initialVersion + 1, afterPushVersion)
+        
+        stack.push("second")
+        assertEquals(initialVersion + 2, stack.getVersion())
+        
+        // Each pop should also increment version
+        stack.pop()
+        assertEquals(initialVersion + 3, stack.getVersion())
+        
+        stack.pop()
+        assertEquals(initialVersion + 4, stack.getVersion())
+    }
+    
+    @Test
+    fun testABAResistance() = runTest {
+        val stack = TreiberStack<Int>()
+        
+        // Push some elements
+        stack.push(1)
+        stack.push(2)
+        stack.push(3)
+        
+        val versionBefore = stack.getVersion()
+        
+        // Simulate ABA scenario: remove and re-add the same element
+        val poppedValue = stack.pop() // Should be 3
+        assertEquals(3, poppedValue)
+        
+        val versionAfterPop = stack.getVersion()
+        assertTrue(versionAfterPop > versionBefore, "Version should increment after pop")
+        
+        // Push the same value back
+        stack.push(3)
+        
+        val versionAfterPush = stack.getVersion()
+        assertTrue(versionAfterPush > versionAfterPop, "Version should increment after push")
+        
+        // Even though we have the same value at the top, version should have changed
+        assertEquals(3, stack.peek())
+        assertTrue(stack.getVersion() != versionBefore, "Version should be different despite same value")
+    }
 }

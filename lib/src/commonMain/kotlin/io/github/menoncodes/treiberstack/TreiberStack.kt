@@ -19,11 +19,17 @@ import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.yield
 
 /**
- * A lock-free concurrent stack implementation using Treiber's algorithm.
+ * A lock-free concurrent stack implementation using Treiber's algorithm with ABA problem mitigation.
  * 
  * This implementation uses Compare-And-Swap (CAS) operations to achieve thread safety
  * without traditional locking mechanisms, providing excellent performance in highly
  * concurrent scenarios.
+ * 
+ * ABA Problem Mitigation:
+ * The stack uses versioned references to prevent ABA problems. Each reference to the
+ * head node includes a version number that is incremented with each modification,
+ * ensuring that even if a node is removed and later re-added, the CAS operation
+ * will detect the change through the version number.
  * 
  * The stack is implemented as a singly-linked list where the head of the list
  * represents the top of the stack. All operations (push and pop) are performed
@@ -34,17 +40,18 @@ import kotlinx.coroutines.yield
 class TreiberStack<T> {
     
     /**
-     * Atomic reference to the top node of the stack.
-     * null indicates an empty stack.
+     * Atomic versioned reference to the top node of the stack.
+     * Uses versioning to prevent ABA problems.
      */
-    private val head: AtomicRef<Node<T>?> = atomic(null)
+    private val head: AtomicRef<VersionedReference<Node<T>>> = 
+        atomic(VersionedReference.initial<Node<T>>())
     
     /**
      * Pushes an item onto the top of the stack.
      * 
      * This operation is lock-free and thread-safe. It uses a retry loop with
      * Compare-And-Swap (CAS) operations to ensure atomicity even under high
-     * contention scenarios.
+     * contention scenarios. The versioned reference prevents ABA problems.
      * 
      * @param item the item to push onto the stack
      */
@@ -52,11 +59,15 @@ class TreiberStack<T> {
         val newNode = Node(item)
         
         while (true) {
-            val currentHead = head.value
+            val currentVersionedHead = head.value
+            val currentHead = currentVersionedHead.reference
             newNode.next = currentHead
             
+            // Create new versioned reference with the new node
+            val newVersionedHead = currentVersionedHead.withNewReference(newNode)
+            
             // Attempt to atomically update the head reference
-            if (head.compareAndSet(currentHead, newNode)) {
+            if (head.compareAndSet(currentVersionedHead, newVersionedHead)) {
                 break // Success - exit the retry loop
             }
             
@@ -70,13 +81,14 @@ class TreiberStack<T> {
      * 
      * This operation is lock-free and thread-safe. It uses a retry loop with
      * Compare-And-Swap (CAS) operations to ensure atomicity even under high
-     * contention scenarios.
+     * contention scenarios. The versioned reference prevents ABA problems.
      * 
      * @return the top item from the stack, or null if the stack is empty
      */
     suspend fun pop(): T? {
         while (true) {
-            val currentHead = head.value
+            val currentVersionedHead = head.value
+            val currentHead = currentVersionedHead.reference
             
             // Stack is empty
             if (currentHead == null) {
@@ -85,8 +97,11 @@ class TreiberStack<T> {
             
             val nextNode = currentHead.next
             
+            // Create new versioned reference with the next node
+            val newVersionedHead = currentVersionedHead.withNewReference(nextNode)
+            
             // Attempt to atomically update the head reference
-            if (head.compareAndSet(currentHead, nextNode)) {
+            if (head.compareAndSet(currentVersionedHead, newVersionedHead)) {
                 return currentHead.item // Success - return the popped item
             }
             
@@ -101,7 +116,7 @@ class TreiberStack<T> {
      * @return the top item from the stack, or null if the stack is empty
      */
     fun peek(): T? {
-        return head.value?.item
+        return head.value.reference?.item
     }
     
     /**
@@ -110,7 +125,7 @@ class TreiberStack<T> {
      * @return true if the stack is empty, false otherwise
      */
     fun isEmpty(): Boolean {
-        return head.value == null
+        return head.value.reference == null
     }
     
     /**
@@ -124,7 +139,7 @@ class TreiberStack<T> {
      */
     fun size(): Int {
         var count = 0
-        var current = head.value
+        var current = head.value.reference
         
         while (current != null) {
             count++
@@ -132,5 +147,15 @@ class TreiberStack<T> {
         }
         
         return count
+    }
+    
+    /**
+     * Returns the current version of the head reference.
+     * Useful for debugging and understanding the ABA mitigation.
+     * 
+     * @return the current version number
+     */
+    fun getVersion(): Long {
+        return head.value.version
     }
 }
