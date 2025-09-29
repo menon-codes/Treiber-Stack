@@ -12,8 +12,8 @@ plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.atomicfu)
     alias(libs.plugins.dokka)
-    alias(libs.plugins.maven.publish)
-    alias(libs.plugins.signing)
+    `maven-publish`
+    signing
 }
 
 kotlin {
@@ -35,7 +35,9 @@ tasks.test {
 
 publishing {
     publications {
-        withType<MavenPublication> {
+        create<MavenPublication>("maven") {
+            from(components["java"])
+            
             pom {
                 name.set("Treiber-Stack")
                 description.set("A lock-free concurrent stack implementation using Treiber's algorithm for Kotlin/JVM")
@@ -67,24 +69,17 @@ publishing {
     
     repositories {
         maven {
-            name = "OSSRH"
-            url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
+            name = "SonatypeCentral"
+            url = uri("https://central.sonatype.com/api/v1/publisher/deployments/upload/")
             credentials {
-                username = project.findProperty("ossrhUsername") as String? ?: ""
-                password = project.findProperty("ossrhPassword") as String? ?: ""
+                username = project.findProperty("sonatypeUsername") as String? ?: ""
+                password = project.findProperty("sonatypePassword") as String? ?: ""
             }
         }
     }
 }
 
 signing {
-    val signingKey: String? by project
-    val signingPassword: String? by project
-    useInMemoryPgpKeys(signingKey, signingPassword)
+    useGpgCmd()
     sign(publishing.publications)
-}
-
-// Only sign if credentials are available
-tasks.withType<Sign>().configureEach {
-    enabled = project.hasProperty("signingKey") && project.hasProperty("signingPassword")
 }
