@@ -51,9 +51,14 @@ This project implements a thread-safe, lock-free stack data structure based on R
   - [ ] Race condition detection tests
   - [ ] Memory leak detection tests
 - [ ] **Performance Benchmarks**
+  - [x] Compare against mutex-based stack implementation
+  - [x] Single-threaded performance comparison
+  - [x] Multi-threaded contention scenarios
+  - [x] Producer-consumer workload testing
+  - [x] Burst workload analysis
+  - [x] Scalability testing (1, 2, 4, 8 threads)
   - [ ] Compare against `ConcurrentLinkedDeque`
   - [ ] Compare against `java.util.concurrent.ConcurrentLinkedQueue`
-  - [ ] Measure contention scenarios
   - [ ] Profile memory usage and GC impact
 
 ### Phase 5: Documentation
